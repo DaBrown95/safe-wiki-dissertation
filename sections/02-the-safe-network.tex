@@ -13,13 +13,29 @@ Owing to this system of ownership, it brings about its own challenges in regards
  
 \section{Peer to Peer vs Client Server}
 
-Centralisation of data and computing power is a natural consequence of the Client-Server architecture that has formed around the internet. Throughout this section, I will use \textit{Netflix}\cite{netflix} as an example to help illustrate my points. When you watch a video on Netflix, your device is merely a consumer of that data. A server owned by Netflix streams the video to your device and that is as far as the relationship goes. With this architecture, there are some obvious benefits. Mainly for the realm of rights management. As Netflix controls access to the data it holds (in this case video files) it is \textit{easy} for them to regulate access to it. They have complete control over what happens to that data. Let's contrast this with another, very popular, means of consuming video that works using a Peer-To-Peer architecture.
+Centralisation of data and computing power is a natural consequence of the Client-Server architecture that has formed around the internet. Throughout this section, I will use \textit{Netflix}\cite{netflix} as an example to help illustrate my points. When you watch a video on Netflix, your device is merely a consumer of that data. A server owned by Netflix streams the video to your device and that is as far as the relationship goes. With this architecture, there are some obvious benefits. Mainly for the realm of rights management. As Netflix controls access to the data it holds (in this case video files) it is \textit{easy} for them to regulate access to it. They have complete control over what happens to that data. Let's contrast this with another, very popular, means of consuming video that works using a Peer-To-Peer architecture. Figure \ref{fig:client-server-peer2peer} shows a Client Server network and a Peer to Peer network.
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=\textwidth]{diagrams/client-server-vs-p2p}
+		\caption{Client-Server vs Peer-to-Peer Network}
+		\label{fig:client-server-peer2peer}
+	\end{center}
+\end{figure}
 
 \subsection{BitTorrent}
 
 The first stable version of the BitTorrent protocol was released in 2001. Since then it has become one of the worlds most popular means of file sharing and indeed internet traffic. Accounting for \%3.5 of global internet traffic at the time of writing\cite{bittorrent-usage}. In a \textit{permission-less} environment users are allowed to freely share files with one another. As there is no centralised body controlling who has access to what data, the system has been widely used for the \textit{piracy} of copyrighted material. The BitTorrent protocol helps to solve many of the same challenges that the SAFE Network aims to. One of which is the centralisation of data in a Client-Server architecture. In the BitTorrent protocol, peers form what is known as a 'swarm'. A 'swarm' is all clients that aim to download a a full copy of a piece of data. A piece of data is broken down into chunks and each chunk has a unique hash that allows clients to uniquely identify each piece of the original file. A client in the swarm is referred to as \textit{peer} when they don't have all the relevant pieces of a file. A client in the swarm is referred to as a \textit{seed} when they do hold all pieces of a given file. The 'resting state' of this network is when all clients in the swarm are \textit{seeds}. So clients will use peer-to-peer routing to send chunks of the file to other clients in the swarm that do not have it. This way of sharing data brings about many benefits. 
 
-In BitTorrent there is no central 'server' to attack (disregarding a \textit{tracker}, there are \textit{tracker-less} solutions available). This means that you can lose clients from the swarm (or clients can leave and rejoin) and as long as at least one person in the swarm has a copy of a specific chunk of data all clients in the swarm can spread the data and become \textit{seeders}. This level of data redundancy is a huge benefit to BitTorrent over a traditional client-server model.
+In BitTorrent there is no central 'server' to attack (disregarding a \textit{tracker}, there are \textit{tracker-less} solutions available). This means that you can lose clients from the swarm (or clients can leave and rejoin) and as long as at least one person in the swarm has a copy of a specific chunk of data all clients in the swarm can spread the data and become \textit{seeders}. This level of data redundancy is a huge benefit to BitTorrent over a traditional client-server model. You can see the topology of a tracker based swarm in Figure \ref{fig:bittorrent-tracker}.
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[scale=0.3]{diagrams/bittorrent}
+		\caption{Topology of tracker based swarm in BitTorrent}
+		\label{fig:bittorrent-tracker}
+	\end{center}
+\end{figure}
 
 Data transfer costs are also a huge benefit to BitTorrent. In the traditional model, the owner of the server has incurs great cost in the hosting of the file. They have to pay for the management, storage and the network costs of sharing that data. For large companies this is often a negligible cost that doesn't impact on them, for smaller organisations however (especially non-profits) this server cost can be a big problem. This is a big reason why many Linux distributions so often provide BitTorrent links to download the operating system. By using BitTorrent they can offload the cost of sharing the file onto their users. This works almost on a good-samaritan basis. Where in if you download a file you really should aim to have your \textit{seed-ratio} hit at least 1 before leaving the swarm permanently (a clients \textit{seed-ratio} is how much of the file they serve to other users against how much they themselves have downloaded from the swarm). For the vast majority of users this cost is negligible and can act as a 'good-will' gesture to help support projects.
 
