@@ -75,9 +75,9 @@ Maidsafe themselves provide a number of Electron example applications\cite{examp
 
 For an application to have connectivity with the SAFE Network, it has to be authenticated. Regardless of whether it is a website or a standalone application. Communication from my application to the SAFE Browser for authentication was one of the most difficult parts of this project. As Electron allows (encourages) cross-platform development, what worked on a Windows computer might not work on Linux or macOS (the platform I worked on). Getting SAFE Wiki to run on all supported platforms was trivial, it just worked straight away. Getting SAFE Wiki to communicate with the SAFE Browser on all platforms was extremely difficult. Luckily, a community member had published an example SAFE Network Electron app called `safe app base'\cite{safe-app-base}. This application is a modified version of the application from the `Electron Quick Start' guide\cite{electron-quick-start}, which made understanding how it worked very easy. The app itself is very basic, all it does is ask the SAFE Browser for authentication then creates a new \textit{Mutable Data Structure} and prints it to console. I discovered though that on macOS the application didn't work. What would happen is the SAFE Browser would successfully authenticate but the application would never receive the response needed to communicate with the network. I managed to deduce that the issue was regarding how URI Schemes are registered across the system. The mechanics of how this works differs across the platforms so what works on one operating system may not work on another. Differences on how you run the application also has an impact. What may work when running the application from terminal (through the `electron` command) might not work when the application has been packaged as a binary. Indeed there are even differences depending on which Electron package you use to bundle/package the application.
 
-\begin{figure}
+\begin{figure}[h]
 	\begin{center}
-		\includegraphics{images/safe-app-base}
+		\includegraphics[width=\textwidth]{images/safe-app-base}
 		\caption{SAFE App Base with newly created Mutable Data structure}
 		\label{fig:safe-app-base}
 	\end{center}
@@ -109,9 +109,9 @@ To access a ZIM file, all a user has to provide to SAFE Wiki is the name of the 
 
 \section{Reading ZIM Files}
  
-An important feature that is facilitated through the use of \textit{Data Maps}(Section \ref{subsec:self-encryption-data-map}) is being able to randomly seek through files. The \textit{Data Map} contains enough information about a file that you can read arbitrary bytes from the file without your client having to download and assemble the entire file. For ZIM files this is important, it is illogical for SAFE Wiki to have to download the = entire Wikipedia so that you can read through a single article. 
+An important feature that is facilitated through the use of \textit{Data Maps}(Section \ref{subsec:self-encryption-data-map}) is being able to randomly seek through files. The \textit{Data Map} contains enough information about a file that you can read arbitrary bytes from the file without your client having to download and assemble the entire file. For ZIM files this is important, it is illogical for SAFE Wiki to have to download the = entire Wikipedia so that you can read through a single article.
 
-\begin{figure}
+\begin{figure}[h]
 	\begin{center}
 		\includegraphics[width=\textwidth]{images/safe-wiki-browsing-coffee}
 		\caption{Browsing a page from the StackOverflow Coffee ZIM file on the SAFE Network}
