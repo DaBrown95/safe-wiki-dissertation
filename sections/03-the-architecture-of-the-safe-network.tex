@@ -9,16 +9,26 @@ The SAFE Network is comprised of \textit{vaults}. A \textit{Vault} is a singular
 
 The only time a user interacts with their \textit{vault} is through configuration before startup. The most notable configuration being the allocation of storage for the \textit{vault}. Once \textit{vaults} start communicating with each other there is no intervention by humans. The network itself votes on and decides many factors. This includes everything from where data should be stored to how much value a \textit{Safecoin} has. This is the autonomy of the network, it does not accept governance by humans and \textit{vaults} cooperate for the good of the entire network.
 
-\subsection{Self-Encryption}
-\label{subsec:self-encryption}
+\section{Immutable and Mutable Data}
 
-Data that is stored on the SAFE Network is split up into small 1MiB chunks through a process called \textit{self-encryption}. Each 1MiB chunk of data is then hashed to give a unique address in 256-Bit XOR Address Space.
+Similar to BitTorrent data is broken down into chunks. Each `chunk' of data that is stored on the SAFE Network is at most 1MiB in size and has a unique 256-Bit XOR Address. This allows every chunk of data to be uniquely identified and helps \textit{vaults} to decide who stores what data. Data stored on the SAFE Network can take one of two forms. It can either be \textit{Immutable Data} or \textit{Mutable Data}. A Mutable Data Structure (MD) is a \textit{key value} storage mechanism that allows for the storage of one thousand entries. An Immutable Data structure only stores a single ``value'', its address derived from the hash of the binary data it contains. An Immutable Data structure can itself only be 1MiB in size, but through the use of a \textit{Data Map} (Section \ref{subsec:data-map}) this limit can be subverted. As their names imply, Mutable Data can be freely mutated whereas Immutable Data cannot. It is this property of Immutable Data that eliminates duplication on the network. For example, if Bob uploads a picture to the network he is presented with the address of that file (possibly the address of a \textit{data-map}) and will have the relevant keys to access it. If Alice then uploads the exact same picture the data is not duplicated, she is simply presented with the same information that Bob was. If either Bob or Alice chooses to ``delete'' the picture, then their access to it is simply revoked as one of the them still has access to the picture.
 
-What happens is that when your file is broken down into 1Mb chunks, each chunk is encrypted with the hash of one of the other chunks. What happens then is a DataMap is constructed, this DataMap then contains the addresses of each of these individual chunks of data so that they can be retrieved.
+\subsection{TODO: Self Encryption and Data Maps}
+\label{subsec:self-encryption-data-map}
+
+Immutable Data is best used for storing binary data but at only 1MiB in size you have to split large amounts of data across different chunks. This is handled by \textit{self encryption}, What happens is that when your file is broken down into 1Mb chunks, each chunk is encrypted with the hash of one of the other chunks. Each of these chunks has a unique 256-Bit XOR Address which is where it will be stored in the network. To keep track of all of this, a \textit{Data Map} for the data is created. The \textit{Data Map} contains several pieces of information:
+\begin{itemize}
+	\item chunk\_num u32: Specifies how many chunks of data are within the Data Map
+	\item hash Vec\textless u8\textgreater: Post-encryption hash of the given chunk
+	\item pre\_hash Vec\textless u8\textgreater: Pre-encryption hash of the given chunk
+	\item source\_size u64: The size of the original piece of data, before any encryption has taken place
+\end{itemize}
+
+Once this \textit{Data Map} is stored on the SAFE Network it is then possible to reconstruct and read files of any given size. A \textit{Data Map} is itself a chunk of data so it too can be put through the \textit{self encryption} process. What this means is that you can have files stored on the network that are bigger than the maximum size a single \textit{Data Map} can handle. \textit{Self encryption} of \textit{Data Maps} means they are broken into chunks and stored in a \textit{Data Map} themselves, creating almost a hierarchy of \textit{Data Maps} for a given file. This ability is very important to SAFE Wiki as some ZIM files are very large (\textgreater 75GB). The API abstracts all the complexities of \textit{Data Maps} away from the developer which means you don't really need to consider all of the complexities. You just write your file to the network and everything is handled for you.
 
 \subsection{Disjoint Sections}
 
-The unique address of every 1MiB chunk from \textit{self encryption} is used to determine what \textit{vaults} are responsible for storing it. Maidsafe's innovation was in the creation of what are called \textit{Disjoint Sections}. These \textit{sections} are groups of vaults that are responsible for a certain range of the 256-Bit XOR Address Space. By default, the network requires a minimum number of vaults to sustain the network. At the time of writing this is 8 vaults. These 8 vaults form a complete \textit{section} and are responsible for the storage of the entire 256-Bit address range. As more vaults join the network, this \textit{section} will grow in size and then eventually split into two new \textit{sections}. There are numerous requirements that have to be met before a \textit{section split} is allowed.
+The unique address of every 1MiB chunk of data is used to determine what \textit{vaults} are responsible for storing it. Maidsafe's innovation was in the creation of what are called \textit{Disjoint Sections}. These \textit{sections} are groups of vaults that are responsible for a certain range of the 256-Bit XOR Address Space. By default, the network requires a minimum number of vaults to sustain the network. At the time of writing this is 8 vaults. These 8 vaults form a complete \textit{section} and are responsible for the storage of the entire 256-Bit address range. As more vaults join the network, this \textit{section} will grow in size and then eventually split into two new \textit{sections}. There are numerous requirements that have to be met before a \textit{section split} is allowed.
 
 % Insert equation for section split
 
@@ -32,14 +42,10 @@ After a split, \textit{sections} are then responsible for half of the 256-Bit ad
 	\end{center}
 \end{figure}
 
-\subsection{Proof of Resource}
+\subsection{TODO: Proof of Resource}
 \label{subsec:proof-of-resource}
 
 The \textit{proof of resource} (PoR) test is used to valid the effectiveness of a \textit{vaults} ability to store and serve data and is the value proposition of \textit{Safecoin}. The PoR is used to validate \textit{vaults} joining the network but also during other network events. The process is as follows:
-
-\begin{itemize}
-	\item 
-\end{itemize}
 
 \subsection{Personas}
 
@@ -47,7 +53,7 @@ The \textit{proof of resource} (PoR) test is used to valid the effectiveness of 
 
 Another important \textit{persona} is that of the \textit{Client Manager}. A \textit{Client Manager} is responsible for storing the account data for clients that fall within its address space. When you create an account on the SAFE Network the data is stored on the network just like any other piece of data. It has a given 256-Bit Address and contains information like: how much \textit{Safecoin} an account has, the number of chunks of data that has been uploaded, etc. As an account is a 256-Bit address it will fall within the domain of a particular section, the \textit{Client Managers} in that \textit{section} will then store the relevant data.
 
-\subsection{Accounts}
+\subsection{TODO: Accounts}
 
 \section{Crust and Encryption}
 
@@ -65,7 +71,7 @@ When a client connects to the network they do so through the use of a \textit{Pr
 	\end{center}
 \end{figure}
 
-\section{Safecoin}
+\section{TODO: Safecoin}
 
 Safecoin is the cryptocurrency of the SAFE Network, it is earned by farmers and spent by writing data to the network. The expectation is that as the cost of CPU/Storage falls with time, the value of the Safecoin will increase. As in, the amount of raw bytes that a given Safecoin would allow the storage of increases.
 
@@ -87,8 +93,4 @@ A crucial part of the integrity of the \textit{Datachain} is \textit{node ageing
 
 \textit{Node ageing} and \textit{churn} are hence essential security features of the network and make it very difficult for an attacker to have any choice in the \textit{section} of the network they wish to attack.
 
-\section{Immutable and Mutable Data}
-
-Data stored on the SAFE Network can take one of two forms. It can either be \textit{Immutable Data} or \textit{Mutable Data}. A Mutable Data Structure (MD) is a \textit{key value} storage mechanism that allows for the storage of one thousand entries at a maximum size of 1MiB. As with all data chunks, an MD has a 256-Bit address to specify its location. An Immutable Data structure only stores a single ``value'', its address derived from the hash of the binary data it contains. An Immutable Data structure can itself only be 1MiB in size, but through the use of a \textit{Data Map} this limit can be subverted. As their names imply, Mutable Data can be freely changed and mutated whereas Immutable Data cannot.  It is this property of Immutable Data that eliminates duplication on the network. For example, if Bob uploads a picture to the network he is presented with the address of that file (possibly the address of a \textit{data-map)} and will have the relevant keys to access it. If Alice then uploads the exact same picture the data is not duplicated, she is simply presented with the same information that Bob was. If either Bob or Alice chooses to ``delete'' the picture, then their access to it is simply revoked as one of the them still has access to the picture.
-
-\section{Privacy and Anonymity}
+\section{TODO: Privacy and Anonymity}
