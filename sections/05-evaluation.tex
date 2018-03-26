@@ -2,7 +2,7 @@
 
 \section{Experimentation with Local Networks}
 
-During software development it is important to be able to adequately test and to deploy your software internally on a local network. Although \textit{Mock Routing} is possible, it is only possible to gain a true perspective on how your application functions when it is ran against a real SAFE Network. A network that is both stable and functioning as the global and public SAFE Network would.
+During software development it is important to be able to adequately test and deploy your software internally on a local network. Although \textit{Mock Routing} is possible, it is only possible to gain a true perspective on how your application functions when it is ran against a real SAFE Network. A network that is both stable and functioning as the global and public SAFE Network would.
 
 \subsection{Method}
 
@@ -66,6 +66,14 @@ What needs to be kept in mind however is the Immutability of Immutable Data. Onc
 
 It is thus when using Immutable Data that users have to be extremely careful when managing the keys to that data. Once leaked, there is no method of revoking access. Thankfully most of the key management to such data is handled by storing them inside a users \textit{account} on the network. A chain is as weak as it's weakest link however, leaked \textit{account} credentials means the leak of all of your data with no avenue to reverse the action. Thus the suggestion to further encrypt the data on the client before uploading it to the network, and storing that key through separate means, is highly suggested.
 
+\subsubsection{Immutability of Data}
+
+As mentioned in Section \ref{subsec:immutability-of-data}, data on the SAFE Network is immutable. Once a chunk is written to the network that chunk of data can never be removed. It is the access to data through \textit{Data Maps} and encryption keys that orchestrates the usage of it. What this means in practical situations is that once someone has access to data, they have access to it forever. There is no way to revoke that right. For SAFE Wiki, this is brilliant. Once a ZIM file is uploaded then a user can access that information forever.
+
+What is troubling however is sometimes a user may indeed wish to delete data permanently. To truly have it be gone forever and not stored by the network. This may be on a personal level or asking a company to delete their personal records. Although not implemented yet, there is talk and an RFC\cite{delete-data-rfc} to bring deletable Immutable Data to the network. However to allow ``Immutable Data'' to be deleted is an interesting concept, One can't really call it it ``Immutable'' if you can indeed delete it.
+
+This quality is also why being able to easily run a local test network is crucial. It is not practical to use the ``real'' SAFE Network during testing and development. Not only does this spam the network but also incurs a cost, something that is not acceptable in most scenarios. Thus the importance of being able to easily run a local network that is stable and has multiple \textit{sections} is important.
+
 \subsection{Cost Benefit}
  
 A huge benefit to anyone wanting to build a website or application is how much it costs to store data on the SAFE Network. Traditionally on the internet, you would need to pay for a server and also a domain name to be used. Depending on how much traffic the website gets you would need a more powerful server which costs more money. This is not the case on the SAFE Network, the only cost is in writing data. A user could publish a website or blog and it doesn't cost them a penny to keep it on the network, it will be available indefinitely.
@@ -89,14 +97,6 @@ To relate the two concepts together in terms of the SAFE Network, I would say th
 This has big implications for the use case of the network but the nuances of how this impacts things is quite subtle. \textit{Data Maps} are what gives meaning and relationship to chunks of data. At the storage level, chunks have absolutely no discernible relationship to each other. The access to \textit{Data Maps} is what gives users privacy. If you are the only person who knows where it is and how to decrypt it then the data it leads to is truly private. Once data is stored on the network, it is anonymous. Thus for the above reasons the SAFE Network allows pseudo-anonymised interactions. In practically users can be relatively assured that their interaction is anonymous, they must however know that it is non ensured fully.
 
 Privacy and anonymity is very important for SAFE Wiki. In some parts of the world people do not have the freedom to access any information they want. A modern day example of this is that the Chinese government are still censoring access to information about Tiananmen Square\cite{tiananmen-square}. Thus the privacy and pseudonymization of activity is very important. The SAFE Network facilitates the uncensored access to information, which as discussed at the beginning of this report is crucial to developing societies. If a user can connect to the SAFE Network successfully they can interact with it fully, there is no avenue to censor or curate their interactions.
-
-\subsection{Immutability of Data}
-
-As mentioned in Section \ref{subsec:immutability-of-data}, data on the SAFE Network is immutable. Once a chunk is written to the network that chunk of data can never be removed. It is the access to data through \textit{Data Maps} and encryption keys that orchestrates the usage of it. What this means in practical situations is that once someone has access to data, they have access to it forever. There is no way to revoke that right. For SAFE Wiki, this is brilliant. Once a ZIM file is uploaded then a user can access that information forever.
-
-What is troubling however is sometimes a user may indeed wish to delete data permanently. To truly have it be gone forever and not stored by the network. This may be on a personal level or asking a company to delete their personal records. Although not implemented yet, there is talk and an RFC\cite{delete-data-rfc} to bring deletable Immutable Data to the network. However to allow ``Immutable Data'' to be deleted is an interesting concept, One can't really call it it ``Immutable'' if you can indeed delete it.
-
-This quality is also why being able to easily run a local test network is crucial. It is not practical to use the ``real'' SAFE Network during testing and development. Not only does this spam the network but also incurs a cost, something that is not acceptable in most scenarios. Thus the importance of being able to easily run a local network that is stable and has multiple \textit{sections} is important.
 
 \subsection{Building websites on the SAFE Network}
 
