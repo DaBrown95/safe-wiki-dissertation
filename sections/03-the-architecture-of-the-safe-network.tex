@@ -1,7 +1,7 @@
 \chapter{The Architecture of the SAFE Network}
 \label{ch:architecture}
 
-The internet is constantly growing and changing. Changes in technologies slowly permeate throughout the network as if by osmosis. Governmental policy can have a large impact on how people interact with the network, whether that be Turkey blocking Wikipedia or the US abandoning Net Neutrality. This area is where the SAFE Network starts to deviate greatly from the \textit{traditional} internet. The SAFE Network is a ``Autonomous Data Network''. To have access to the SAFE Network means to have access to all of it. A government cannot curate access data. This is made possible by the architecture of the SAFE Network.
+The internet is constantly growing and changing. Changes in technologies slowly permeate throughout the network as if by osmosis. Governmental policy can have a large impact on how people interact with the network, whether that be Turkey blocking Wikipedia\cite{turkey} or the US abandoning Net Neutrality. This area is where the SAFE Network starts to deviate greatly from the \textit{traditional} internet. The SAFE Network is a ``Autonomous Data Network''. To have access to the SAFE Network means to have access to all of it. A government cannot curate access data. This is made possible by the architecture of the SAFE Network.
 
 \section{Vaults and Clients}
 
@@ -19,10 +19,12 @@ Similar to BitTorrent data is broken down into chunks. Each ``chunk'' of data th
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[width=\textwidth]{diagrams/self-encryption}
-		\caption{The \textit{Self Encryption} process (sourced from https://safenetwork.wiki/en/Encrypt)}
+		\caption{The \textit{Self Encryption} process \protect\footnotemark}
 		\label{fig:self-encryption}
 	\end{center}
 \end{figure}
+
+\footnotetext{Sourced from https://safenetwork.wiki/en/Encrypt}
 
 Immutable Data that is stored on the SAFE Network goes through a process called \textit{Self Encryption}\cite{irvine2010self}. During \textit{self encryption} data is broken down into chunks of a specified size (The SAFE Network uses 1MB chunks). To be able to reassemble and read the data a structure known as a \textit{Data Map} is created during the process. The \textit{Data Map} contains several pieces of information:
 
