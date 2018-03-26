@@ -1,6 +1,64 @@
 \chapter{Evaluation}
 
-\section{Ownership of Data}
+\section{Experimentation with Local Networks}
+
+During software development it is important to be able to adequately test and to deploy your software internally on a local network. Although \textit{Mock Routing} is possible, it is only possible to gain a true perspective on how your application functions when it is ran against a real SAFE Network. A network that is both stable and functioning as the global and public SAFE Network would.
+
+\subsection{Method}
+
+After SAFE Wiki was fully working some un-formal experimentation on how well a local SAFE Network can handle the uploading of ZIM files was performed. To do this, a number of \textit{vaults} were setup on different computers on a local network. The computers used included a desktop, laptop and a Raspberry Pi\footnote{https://www.raspberrypi.org/}.
+
+It was very easy to setup the local network, \textit{vaults} could successfully connect to each other and form \textit{sections} without any further configuration. The network was indeed working \textit{autonomously}. Regrettably however, the Raspberry Pi did not work well and consequently it was no longer used. It is difficult to say whether this was down to network connectivity or limited hardware resources. What can be deduced however is that a \textit{vault} running on a machine like a Raspberry Pi 3 is not viable at this time.
+
+ZIM files were repeatedly stored on the network and then browsed from different computers, including computers that didn't have the \textit{vault} running on them. The number of \textit{vaults} on the network was increased to the point that network \textit{splits} started to happen. During testing, the number of \textit{vaults} needed before a \textit{split} happened varied, it did however have a lower bound on the number of \textit{vaults} required. The SAFE Network has a \texttt{split\_buffer} that is used in helping to decide if a network split should happen, currently set to \texttt{3}. This in combination with the \texttt{min\_section\_size} is used to decide if a \textit{split} should happen, the equation can be seen in Figure \ref{fig:split-equation}. For a \textit{split} to happen, this condition must be met for every \textit{section}.
+
+\begin{equation}
+	number\ of\ vaults = min\_section\_size + split\_buffer
+	\label{fig:split-equation}
+\end{equation}
+
+The \texttt{min\_section\_size} is a configuration option that dictates the minimum number of \textit{vaults} required to form a complete \textit{section}. By default this value is set to \texttt{8}, however using this number with a local network is problematic. Using the equation in Figure \ref{fig:split-equation}, to have two \textit{sections} on a local network you would need a minimum of \texttt{22} \textit{vaults}. To run this number of \textit{vaults} on one machine is difficult, anecdotally the network is extremely slow if you do. Hence to facilitate a greater number of \textit{sections} in a local network it is advisable to set the \texttt{min\_section\_size} as small as possible.
+
+\subsection{Results}
+
+What was notable about this experimentation is that it is extremely easy to create your own SAFE Network locally. For developers and researches this facility is of the utmost importance. What proved to be difficult though was varying the \texttt{min\_section\_size} used for the network. It was found that when using a number such as \texttt{2}, the network was unstable. If \textit{vaults} left or joined after data had begun to be stored, the network would cease to function and would simply lock-up and not respond to clients. The explanation for this is that the network isn't designed to be fully functional with such a small \texttt{min\_section\_size}. This means that in practice it is difficult for a single person to have enough computing power to run a local network with a significant number of sections. To have two \textit{sections} with a \texttt{min\_section\_size} of \texttt{2} requires a minimum of \texttt{10} \textit{vaults}. Figure \ref{fig:min-section-size-graph} shows the significance of the difference between a \texttt{min\_section\_size} of \texttt{2} and \texttt{8}.
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    axis lines = left,
+    xlabel = $x$,
+    ylabel = {$x(min\_section\_size+3)$},
+]
+%Below the red parabola is defined
+\addplot [
+    domain=0:100, 
+    samples=100, 
+    color=red,
+]
+{x*(8+3)};
+\addlegendentry{$x(8+3)$}
+%Here the blue parabloa is defined
+\addplot [
+    domain=0:100, 
+    samples=100, 
+    color=blue,
+]
+{x*(2+3)};
+\addlegendentry{$x(2+3)$}
+\end{axis}
+\end{tikzpicture}
+
+\caption{Compares how \texttt{min\_section\_size} impacts the number of \textit{vaults} needed to form a given number of \textit{sections}.}
+\label{fig:min-section-size-graph}
+\end{figure}
+
+What this means is that to adequately test an application against a stable and local SAFE Network is difficult. The ability of the network to be more stable at lower \texttt{min\_section\_size} values, or to have a formally specified and endorsed minimum value that can be used, would be very beneficial.
+
+\section{Discussion}
+
+\subsection{Ownership of Data}
 
 As discussed in Section \ref{sec:ownership-of-data}, Ownership of Data is an important aspect of the SAFE Network. ``Users own their own data'' is a feature that the network strives to insure. It is through exploiting these features that developers can create applications in a totally different way.
 
@@ -8,19 +66,19 @@ What needs to be kept in mind however is the Immutability of Immutable Data. Onc
 
 It is thus when using Immutable Data that users have to be extremely careful when managing the keys to that data. Once leaked, there is no method of revoking access. Thankfully most of the key management to such data is handled by storing them inside a users \textit{account} on the network. A chain is as weak as it's weakest link however, leaked \textit{account} credentials means the leak of all of your data with no avenue to reverse the action. Thus the suggestion to further encrypt the data on the client before uploading it to the network, and storing that key through separate means, is highly suggested.
 
-\section{Cost Benefit}
+\subsection{Cost Benefit}
  
 A huge benefit to anyone wanting to build a website or application is how much it costs to store data on the SAFE Network. Traditionally on the internet, you would need to pay for a server and also a domain name to be used. Depending on how much traffic the website gets you would need a more powerful server which costs more money. This is not the case on the SAFE Network, the only cost is in writing data. A user could publish a website or blog and it doesn't cost them a penny to keep it on the network, it will be available indefinitely.
  
 For SAFE Wiki, this means that once a user pays to upload something like Wikipedia (``only'' ~75GB in size) it is then available to everyone for free and forever. It doesn't cost anymore money than it cost to store the file originally. This means that it is possible to publish a resource like Wikipedia and incur no running costs. As the ZIM file is stored on the network as immutable data it cannot be deleted or altered. Meaning once uploaded that file is available for consumption by all and forever.
  
-\section{Alternative Business Models}
+\subsection{Alternative Business Models}
 
 Like any new technology, the SAFE Network opens up many opportunities that didn't exist before. In SAFE Network nomenclature, \textit{vaults} farm data. The safe and reliable storage (farming) of data is rewarded with \textit{Safecoin}. One could envision an application that instead of charging users for access, allows them to become a \textit{vault} that generates \textit{Safecoin}. This \textit{Safecoin} could then be sent back to the creators of the program and hence financially compensates them for the usage of their application. One consideration of this approach however is that \textit{vaults} don't get to choose what data they store, that is an integral part of the architecture of the SAFE Network. By following this financial model then it would be for the ``good of the whole'', increasing the utility of the entire network and not just for one application.
 
 This model could be used to better make use of a consumers resources. When a user sits and watches Netflix on an entertainment system, there is very little strain on the resources of the device. In the case of a games console, literally teraflops of processing power, advanced networking and storage facilities are going unused. Potential financial models can try to \textit{exploit} this untapped power to the benefit of both the user and the provider of the application. Encouraging the creation of more \textit{vaults} not only increases the utility of the SAFE Network but provides users with an entirely new way to pay for content. Offering the resources they have in exchange for access to services.
 
-\section{Privacy and Anonymity}
+\subsection{Privacy and Anonymity}
 
 Anonymity and Privacy are not mutually exclusive. Anonymity means \textit{``Nameless; of unknown name; also, of unknown or unavowed authorship''}\cite{anonymous}. True anonymity is very important for many people around the world, especially when it comes to digital communications. The identities of individuals is what matters here. Being able to convey a message and be ``nameless''. 
 
@@ -32,21 +90,23 @@ This has big implications for the use case of the network but the nuances of how
 
 Privacy and anonymity is very important for SAFE Wiki. In some parts of the world people do not have the freedom to access any information they want. A modern day example of this is that the Chinese government are still censoring access to information about Tiananmen Square\cite{tiananmen-square}. Thus the privacy and pseudonymization of activity is very important. The SAFE Network facilitates the uncensored access to information, which as discussed at the beginning of this report is crucial to developing societies. If a user can connect to the SAFE Network successfully they can interact with it fully, there is no avenue to censor or curate their interactions.
 
-\section{Immutability of Data}
+\subsection{Immutability of Data}
 
 As mentioned in Section \ref{subsec:immutability-of-data}, data on the SAFE Network is immutable. Once a chunk is written to the network that chunk of data can never be removed. It is the access to data through \textit{Data Maps} and encryption keys that orchestrates the usage of it. What this means in practical situations is that once someone has access to data, they have access to it forever. There is no way to revoke that right. For SAFE Wiki, this is brilliant. Once a ZIM file is uploaded then a user can access that information forever.
 
 What is troubling however is sometimes a user may indeed wish to delete data permanently. To truly have it be gone forever and not stored by the network. This may be on a personal level or asking a company to delete their personal records. Although not implemented yet, there is talk and an RFC\cite{delete-data-rfc} to bring deletable Immutable Data to the network. However to allow ``Immutable Data'' to be deleted is an interesting concept, One can't really call it it ``Immutable'' if you can indeed delete it.
 
-\section{Building websites on the SAFE Network}
+This quality is also why being able to easily run a local test network is crucial. It is not practical to use the ``real'' SAFE Network during testing and development. Not only does this spam the network but also incurs a cost, something that is not acceptable in most scenarios. Thus the importance of being able to easily run a local network that is stable and has multiple \textit{sections} is important.
+
+\subsection{Building websites on the SAFE Network}
 
 The SAFE Network can do simple websites really well. If a user wants to create a blog or a website then the SAFE Network is a fabulous choice. The cost benefit of not having ``running costs'' is a big benefit to people. Some websites are not updated frequently and thus being stored on the SAFE Network would possibly save users years of running costs. It is when websites become more complex, that the SAFE Network becomes a very difficult product to suggest. A simple example is e-commerce. As there is no processing available on the SAFE Network you would have to run your website against a server to handle payment processing. With that, it almost breaks the point of using the SAFE Network to some degree. It is still useful but by relying on a server makes one wonder if there is much point in using the SAFE Network to host the website. Some shops may find it more profitable but for some there may be little benefit. This could be answered by offering the use of Cryptocurrency as an option to pay for goods, this approach wouldn't need a traditional server to handle payment processing. For wide-scale adoption however only accepting Cryptocurrency is not a sensible option.
 
-\section{Storing and archiving data}
+\subsection{Storing and archiving data}
 
 The storage of data is where the SAFE Network excels. Immutable Data on the SAFE Network is immutable. Storing things like backups and archives makes perfect sense, once stored it cannot be removed. Thus the SAFE Network is a very attractive option when it comes to the long term and secure storage of data, this applies to organisations and to individual users. The general populous could make very good use of services like DropBox on the SAFE Network. The attractive thing about this is that they can know their data is safe, only they have access to it. The reduced cost is very appealing too, a user could backup large amounts of data and have access to it indefinitely without having to pay a yearly or monthly fee. Organisations could use the SAFE Network to perform backups of critical systems and for other purposes. Long term indefinite storage with a one time fee is a very attractive prospect.
 
-\subsection{Companies cannot own third party data}
+\subsubsection{Companies cannot own third party data}
 
 As discussed previously, data on the SAFE Network cannot be deleted. This means that under current laws and regulations, companies would find it extremely difficult to operate under their current methods. If for instance a user requested that their data was deleted, the company simply wouldn't be able to if it was stored on the SAFE Network. All they could do is the equivalent of throwing away the key to a filing cabinet. Amongst many other reasons, this is why companies cannot own ``third party'' data on the SAFE Network. How this is handled needs to be flipped to a model where users/companies own their own data. Instead of a user giving companies their data, they give the companies access to their data to facilitate the services they wish to access. This model means that services would need to be built around the idea that the source of the data is ultimately in control of that data. For services like Netflix\footnote{https://www.netflix.com/}, this would mean that the content produces would simply grant access to their videos and Netflix would then simply exist as an intermediary between the consumer and the video. This model means the content producer owns their own content.
 
@@ -101,19 +161,19 @@ Suggesting that the SAFE Network is a viable avenue for existing business is dif
 
 To date there isn't a fully working prototype of what the ``1.0'' release of the network will be. At this point, it is crucial that the network works properly as users will see this as the signal to start storing important data. In extension to this, a succinct and official definition of what the SAFE Network will be isn't available. Thus the current version of the SAFE Network is nothing more than a demo, work in progress, for what the ``final'' version of the network will be. This makes it extremely difficult to draw any sort of concrete conclusions as to the effectiveness of the network and developing applications for it.
 
-\section{Future Work}
+\subsection{Future Work}
 
 The SAFE Network provides many exciting avenues for academic research. The title of this paper is ``Building Applications on the SAFE Network'' and that was the main focus of it. With such a broad topic it is difficult to answer some specific questions in as much depth that is needed. The following are proposals of specific areas that would benefit from explicit  and deep academic research.
 
-\subsection{Safecoin}
+\subsubsection{Safecoin}
 
 As discussed in Section \ref{subsec:problem-safecoin}, the success of \textit{Safecoin} is crucial to the success of the SAFE Network. A deeper and formal analysis on the economic viability of the \textit{Safecoin} is needed to really evaluate whether the SAFE Network is a financially viable option for users.
 
-\subsection{Datachain's}
+\subsubsection{Datachain's}
 
 How Datachain's will ultimately impact the operation of the SAFE Network is still undecided. An interesting academic exercise could be to review the current proposals and to run simulations to give quantitative evidence to the effectiveness of those proposals. They are implementing the current proposals and will be included in the \textit{alpha 3} release of the network. Upon the successful release of \textit{alpha 3} the deeper analysis of how Datachain's operate and function will be possible. This is all information that would be incredibly useful to Maidsafe.
 
-\subsection{Competitors}
+\subsubsection{Competitors}
 
 There does exist some competitors to the SAFE Network and they all share the central goal of creating a decentralised peer to peer file storage network. An analysis on how the SAFE Network compares to these competitors would be an interesting topic to look at. An ideal candidate for comparison is Filecoin\cite{filecoin}. The goals of both projects is very similar but with different ways to achieve the same goals. The incentive layer for Filecoin is far more clearly defined than in the SAFE Network (currently) so an evaluation between the two could be beneficial academically and to Maidsafe themselves.
 
